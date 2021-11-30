@@ -1,11 +1,11 @@
 import os
 import re
 from copy import deepcopy
-
+import time
 
 def run_glpsol():
-    os.system("glpsol --lp 1.lp -o output.txt")
-    with open("output.txt", "r") as outputfile:
+    os.system("glpsol --lp 1.lp -o output_1.txt")
+    with open("output_1.txt", "r") as outputfile:
         opt_value = None
         for line in outputfile.readlines():
             if "Objective" in line:
@@ -34,7 +34,7 @@ graph = {
 
 properties = {
     "Q": {
-        "cost": 100,
+        "energy": 100,
         "product": {
             "G": 200,
             "D": 75
@@ -48,7 +48,7 @@ properties = {
         }
     },
     "F": {
-        "cost": 300,
+        "energy": 300,
         "product": {
             "J": 60,
         },
@@ -69,6 +69,7 @@ items = ["G", "D", "J"]
 
 LIMIT = 165
 MAX_ENERGY = 850
+NODE_NUM = 12
 
 
 def produce_problem():
@@ -78,25 +79,12 @@ def produce_problem():
         for index in indices['M']:
             # every neighbor to the market
             for neighbor in graph[index]:
-                # if the neighbor is a factory
-                if neighbor in indices['F']:
-                    # then for every product produced by the factory
-                    # actually, there is only one product produced by the factory(jewelry)
-                    for prod in properties['F']['product']:
-                        # write the total price of the product
+                for item in items:
+                    if neighbor not in indices['M']:
                         f.write(
-                            f"+ {properties['M']['prices'][prod]} {prod}_{neighbor}_{index}")
-                    # besides, the factory can output raw materials directly
-                    for prod in properties['F']['demand']:
+                            f"- {properties['M']['prices'][item]} {item}_{index}_{neighbor}")
                         f.write(
-                            f"+ {properties['M']['prices'][prod]} {prod}_{neighbor}_{index}")
-                # if the neighbor is a quarry
-                elif neighbor in indices['Q']:
-                    # then for every product produced by the quarry
-                    # it can be sold to the market directly
-                    for prod in properties['Q']['product']:
-                        f.write(
-                            f"+ {properties['M']['prices'][prod]} {prod}_{neighbor}_{index}")
+                            f"+ {properties['M']['prices'][item]} {item}_{neighbor}_{index}")
         f.write(f"\nSubject To\n\n")
 
         # flow constraints
@@ -114,25 +102,28 @@ def produce_problem():
 
         # factory and quarry efficiency constraints
         f.write("\\factories and quarries efficiency constraints\n")
-        for prod,prod_value in properties['F']['product'].items():
+        for prod, prod_value in properties['F']['product'].items():
             for index in indices['F']:
                 for neighbor in graph[index]:
                     f.write(f"+ {prod}_{index}_{neighbor} ")
+                    f.write(f"- {prod}_{neighbor}_{index} ")
                 f.write(f"<= {prod_value}\n")
-        for prod,prod_value in properties['Q']['product'].items():
+        for prod, prod_value in properties['Q']['product'].items():
             for index in indices['Q']:
                 for neighbor in graph[index]:
                     f.write(f"+ {prod}_{index}_{neighbor} ")
+                    f.write(f"- {prod}_{neighbor}_{index} ")
                 f.write(f"<= {prod_value}\n")
         f.write("\n")
 
         # for factory: jewelry:gold:diamond=60:70:20
         f.write("\\for factory: jewelry:gold:diamond=60:70:20\n")
-        for item,item_value in properties['F']['demand'].items():
+        for item, item_value in properties['F']['demand'].items():
             for prod, prod_value in properties['F']['product'].items():
                 for index in indices['F']:
                     for neighbor in graph[index]:
                         f.write(f"+ {item_value} {prod}_{index}_{neighbor} ")
+                        f.write(f"- {item_value} {prod}_{neighbor}_{index} ")
                         f.write(f"+ {prod_value} {item}_{index}_{neighbor} ")
                         f.write(f"- {prod_value} {item}_{neighbor}_{index} ")
                     f.write("=0\n")
@@ -140,16 +131,23 @@ def produce_problem():
 
         # for quarry: gold:diamond=200:75
         f.write("\\for quarry: gold:diamond=200:75\n")
-        q_products = [[key,val] for key,val in properties['Q']['product'].items()]
+        q_products = [[key, val]
+                      for key, val in properties['Q']['product'].items()]
         print(q_products)
         for prod in q_products:
             for prod_next in q_products[1:]:
                 if prod != prod_next:
                     for index in indices['Q']:
                         for neighbor in graph[index]:
-                            f.write(f"+ {prod[1]} {prod_next[0]}_{index}_{neighbor} ")
+                            f.write(
+                                f"+ {prod[1]} {prod_next[0]}_{index}_{neighbor} ")
                             # f.write(f"+ {prod_next[1]} {prod[0]}_{index}_{neighbor} ")
-                            f.write(f"- {prod_next[1]} {prod[0]}_{neighbor}_{index} ")
+                            f.write(
+                                f"- {prod[1]} {prod_next[0]}_{neighbor}_{index} ")
+                            f.write(
+                                f"- {prod_next[1]} {prod[0]}_{index}_{neighbor} ")
+                            f.write(
+                                f"+ {prod_next[1]} {prod[0]}_{neighbor}_{index} ")
                         f.write("=0\n")
         f.write("\n")
 
@@ -163,9 +161,18 @@ def produce_problem():
                 f.write(">=0\n")
         f.write("\n")
 
+        # factory produces jewelry
+        f.write("\\factory produces jewelry\n")
+        for prod, prod_value in properties['F']['product'].items():
+            for index in indices['F']:
+                for neighbor in graph[index]:
+                    f.write(f"+ {prod}_{index}_{neighbor} ")
+                    f.write(f"- {prod}_{neighbor}_{index} ")
+                f.write(">=0\n")
+
         # quarry produces gold and diamond
         f.write("\\quarry produces gold and diamond\n")
-        for prod,prod_value in properties['Q']['product'].items():
+        for prod, prod_value in properties['Q']['product'].items():
             for index in indices['Q']:
                 for neighbor in graph[index]:
                     f.write(f"+ {prod}_{index}_{neighbor} ")
@@ -173,12 +180,69 @@ def produce_problem():
                 f.write(">=0\n")
         f.write("\n")
 
+        # quarry can only transport jewelry
+        f.write("\\quarry can only transport jewelry\n")
+        for index in indices['Q']:
+            for neighbor in graph[index]:
+                f.write(f"+ J_{index}_{neighbor} ")
+                f.write(f"- J_{neighbor}_{index} ")
+            f.write("= 0\n")
+        f.write("\n")
+
+        # convert jewelry produced to energy
+        f.write("\\convert jewelry produced to energy\n")
+        prod, prod_value = list(properties['F']['product'].items())[0]
+        for index in indices['F']:
+            for neighbor in graph[index]:
+                f.write(
+                    f"+ {properties['F']['energy']} {prod}_{index}_{neighbor} ")
+                f.write(
+                    f"- {properties['F']['energy']} {prod}_{neighbor}_{index} ")
+            f.write(f"- {prod_value} E_{index} = 0\n")
+        f.write("\n")
+
+        # convert gold produced to energy
+        f.write("\\convert gold produced to energy\n")
+        prod, prod_value = list(properties['Q']['product'].items())[0]
+        for index in indices['Q']:
+            for neighbor in graph[index]:
+                f.write(
+                    f"+ {properties['Q']['energy']} {prod}_{index}_{neighbor} ")
+                f.write(
+                    f"- {properties['Q']['energy']} {prod}_{neighbor}_{index} ")
+            f.write(f"- {prod_value} E_{index} = 0\n")
+        f.write("\n")
+
         # energy constraints, total energy <= MAX_ENERGY
         f.write("\\energy constraints, total energy <= MAX_ENERGY\n")
-        
-        
+        for num in range(1, NODE_NUM+1):
+            f.write(f"+ E_{num} ")
+        f.write(f"<={MAX_ENERGY}\n")
+        f.write("\n")
+
+        # market input >= output
+        f.write("\\market input >= output\n")
+        for index in indices['M']:
+            for neighbor in graph[index]:
+                for item in items:
+                    f.write(f"- {item}_{index}_{neighbor} ")
+                    f.write(f"+ {item}_{neighbor}_{index} ")
+            f.write(">=0\n")
+
+        # Bounds
+        f.write("Bounds\n")
+        for index in graph:
+            for neighbor in graph[index]:
+                for item in items:
+                    f.write(f"{item}_{index}_{neighbor}>=0\n")
+        f.write("\n")
+
+        f.write("END\n")
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     produce_problem()
-    #print(graph)
+    # print(graph)
+    print(run_glpsol())
+    print(f"--- {round(time.time() - start_time,2)} seconds ---")

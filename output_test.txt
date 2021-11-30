@@ -1,0 +1,243 @@
+Problem:    
+Rows:       91
+Columns:    120
+Non-zeros:  664
+Status:     OPTIMAL
+Objective:  obj = 0 (MAXimum)
+
+   No.   Row name   St   Activity     Lower bound   Upper bound    Marginal
+------ ------------ -- ------------- ------------- ------------- -------------
+     1 r.6          B              0                         165 
+     2 r.7          B              0                         165 
+     3 r.8          B              0                         165 
+     4 r.9          B              0                         165 
+     5 r.10         B              0                         165 
+     6 r.11         B              0                         165 
+     7 r.12         B              0                         165 
+     8 r.13         B              0                         165 
+     9 r.14         B              0                         165 
+    10 r.15         B              0                         165 
+    11 r.16         B              0                         165 
+    12 r.17         B              0                         165 
+    13 r.18         B              0                         165 
+    14 r.19         B              0                         165 
+    15 r.20         B              0                         165 
+    16 r.21         B              0                         165 
+    17 r.22         B              0                         165 
+    18 r.23         B              0                         165 
+    19 r.26         B              0                          60 
+    20 r.27         B              0                          60 
+    21 r.28         B              0                          60 
+    22 r.29         B              0                         200 
+    23 r.30         B              0                         200 
+    24 r.31         B              0                         200 
+    25 r.32         B              0                         200 
+    26 r.33         B              0                         200 
+    27 r.34         B              0                         200 
+    28 r.35         B              0                         200 
+    29 r.36         B              0                          75 
+    30 r.37         B              0                          75 
+    31 r.38         B              0                          75 
+    32 r.39         B              0                          75 
+    33 r.40         B              0                          75 
+    34 r.41         B              0                          75 
+    35 r.42         B              0                          75 
+    36 r.45         NS             0             0             =       15.2381 
+    37 r.46         NS             0             0             =       15.2381 
+    38 r.47         NS             0             0             =       15.2381 
+    39 r.48         NS             0             0             =      -3.33333 
+    40 r.49         NS             0             0             =      -3.33333 
+    41 r.50         NS             0             0             =      -3.33333 
+    42 r.53         NS             0             0             =             2 
+    43 r.54         NS             0             0             =             2 
+    44 r.55         NS             0             0             =             2 
+    45 r.56         NS             0             0             =             2 
+    46 r.57         NS             0             0             =             2 
+    47 r.58         NS             0             0             =             2 
+    48 r.59         NS             0             0             =             2 
+    49 r.62         NL             0             0                    -1064.29 
+    50 r.63         NL             0             0                    -1064.29 
+    51 r.64         NL             0             0                    -1064.29 
+    52 r.65         B              0             0               
+    53 r.66         B              0             0               
+    54 r.67         B              0             0               
+    55 r.70         B              0             0               
+    56 r.71         B              0             0               
+    57 r.72         B              0             0               
+    58 r.74         B              0             0               
+    59 r.75         B              0             0               
+    60 r.76         B              0             0               
+    61 r.77         B              0             0               
+    62 r.78         B              0             0               
+    63 r.79         B              0             0               
+    64 r.80         B              0             0               
+    65 r.81         NL             0             0                        -200 
+    66 r.82         NL             0             0                        -200 
+    67 r.83         NL             0             0                        -200 
+    68 r.84         NL             0             0                        -200 
+    69 r.85         NL             0             0                        -200 
+    70 r.86         NL             0             0                        -200 
+    71 r.87         NL             0             0                        -200 
+    72 r.90         NS             0             0             =          1000 
+    73 r.91         NS             0             0             =          1000 
+    74 r.92         NS             0             0             =          1000 
+    75 r.93         NS             0             0             =          1000 
+    76 r.94         NS             0             0             =          1000 
+    77 r.95         NS             0             0             =          1000 
+    78 r.96         NS             0             0             =          1000 
+    79 r.99         NS             0             0             =         < eps
+    80 r.100        NS             0             0             =         < eps
+    81 r.101        NS             0             0             =         < eps
+    82 r.104        NS             0             0             =         < eps
+    83 r.105        NS             0             0             =         < eps
+    84 r.106        NS             0             0             =         < eps
+    85 r.107        NS             0             0             =         < eps
+    86 r.108        NS             0             0             =         < eps
+    87 r.109        NS             0             0             =         < eps
+    88 r.110        NS             0             0             =         < eps
+    89 r.113        B              0                         850 
+    90 r.116        B              0             0               
+    91 r.117        B              0             0               
+
+   No. Column name  St   Activity     Lower bound   Upper bound    Marginal
+------ ------------ -- ------------- ------------- ------------- -------------
+     1 G_5_1        NL             0             0                       < eps
+     2 G_1_5        B              0             0               
+     3 D_5_1        NL             0             0                       < eps
+     4 D_1_5        B              0             0               
+     5 J_5_1        NL             0             0                       < eps
+     6 J_1_5        B              0             0               
+     7 G_5_4        NL             0             0                       < eps
+     8 G_4_5        B              0             0               
+     9 D_5_4        NL             0             0                       < eps
+    10 D_4_5        NL             0             0                       < eps
+    11 J_5_4        NL             0             0                       < eps
+    12 J_4_5        B              0             0               
+    13 G_6_7        NL             0             0                       < eps
+    14 G_7_6        B              0             0               
+    15 D_6_7        NL             0             0                       < eps
+    16 D_7_6        NL             0             0                       < eps
+    17 J_6_7        NL             0             0                       < eps
+    18 J_7_6        B              0             0               
+    19 G_6_10       NL             0             0                       < eps
+    20 G_10_6       B              0             0               
+    21 D_6_10       NL             0             0                       < eps
+    22 D_10_6       NL             0             0                       < eps
+    23 J_6_10       NL             0             0                       < eps
+    24 J_10_6       B              0             0               
+    25 G_1_2        NL             0             0                       < eps
+    26 G_2_1        NL             0             0                       < eps
+    27 D_1_2        B              0             0               
+    28 D_2_1        NL             0             0                       < eps
+    29 J_1_2        NL             0             0                       < eps
+    30 J_2_1        B              0             0               
+    31 G_1_3        NL             0             0                       < eps
+    32 G_3_1        NL             0             0                       < eps
+    33 D_1_3        B              0             0               
+    34 D_3_1        NL             0             0                       < eps
+    35 J_1_3        NL             0             0                       < eps
+    36 J_3_1        NL             0             0                       < eps
+    37 G_2_7        B              0             0               
+    38 G_7_2        NL             0             0                       < eps
+    39 D_2_7        NL             0             0                       < eps
+    40 D_7_2        NL             0             0                       < eps
+    41 J_2_7        NL             0             0                       < eps
+    42 J_7_2        NL             0             0                       < eps
+    43 G_2_8        NL             0             0                       < eps
+    44 G_8_2        NL             0             0                       < eps
+    45 D_2_8        B              0             0               
+    46 D_8_2        NL             0             0                       < eps
+    47 J_2_8        NL             0             0                       < eps
+    48 J_8_2        B              0             0               
+    49 G_3_4        B              0             0               
+    50 G_4_3        NL             0             0                       < eps
+    51 D_3_4        NL             0             0                       < eps
+    52 D_4_3        NL             0             0                       < eps
+    53 J_3_4        NL             0             0                       < eps
+    54 J_4_3        NL             0             0                       < eps
+    55 G_3_9        NL             0             0                       < eps
+    56 G_9_3        NL             0             0                       < eps
+    57 D_3_9        B              0             0               
+    58 D_9_3        NL             0             0                       < eps
+    59 J_3_9        NL             0             0                       < eps
+    60 J_9_3        B              0             0               
+    61 G_4_9        NL             0             0                       < eps
+    62 G_9_4        B              0             0               
+    63 D_4_9        B              0             0               
+    64 D_9_4        NL             0             0                       < eps
+    65 J_4_9        NL             0             0                       < eps
+    66 J_9_4        NL             0             0                       < eps
+    67 G_5_6        NL             0             0                       < eps
+    68 G_6_5        NL             0             0                       < eps
+    69 D_5_6        NL             0             0                       < eps
+    70 D_6_5        NL             0             0                       < eps
+    71 J_5_6        NL             0             0                       < eps
+    72 J_6_5        NL             0             0                       < eps
+    73 G_7_8        NL             0             0                       < eps
+    74 G_8_7        B              0             0               
+    75 D_7_8        B              0             0               
+    76 D_8_7        NL             0             0                       < eps
+    77 J_7_8        NL             0             0                       < eps
+    78 J_8_7        NL             0             0                       < eps
+    79 G_8_12       NL             0             0                       < eps
+    80 G_12_8       NL             0             0                       < eps
+    81 D_8_12       B              0             0               
+    82 D_12_8       NL             0             0                       < eps
+    83 J_8_12       NL             0             0                       < eps
+    84 J_12_8       B              0             0               
+    85 G_9_11       NL             0             0                       < eps
+    86 G_11_9       NL             0             0                       < eps
+    87 D_9_11       NL             0             0                       < eps
+    88 D_11_9       NL             0             0                       < eps
+    89 J_9_11       NL             0             0                       < eps
+    90 J_11_9       B              0             0               
+    91 G_10_11      NL             0             0                       < eps
+    92 G_11_10      B              0             0               
+    93 D_10_11      B              0             0               
+    94 D_11_10      NL             0             0                       < eps
+    95 J_10_11      NL             0             0                       < eps
+    96 J_11_10      NL             0             0                       < eps
+    97 G_10_12      NL             0             0                       < eps
+    98 G_12_10      B              0             0               
+    99 D_10_12      NL             0             0                       < eps
+   100 D_12_10      NL             0             0                       < eps
+   101 J_10_12      NL             0             0                       < eps
+   102 J_12_10      NL             0             0                       < eps
+   103 G_11_12      NL             0             0                       < eps
+   104 G_12_11      NL             0             0                       < eps
+   105 D_11_12      NL             0             0                       < eps
+   106 D_12_11      B              0             0               
+   107 J_11_12      NL             0             0                       < eps
+   108 J_12_11      B              0             0               
+   109 E_4          B              0             0               
+   110 E_7          B              0             0               
+   111 E_10         B              0             0               
+   112 E_1          B              0             0               
+   113 E_2          B              0             0               
+   114 E_3          B              0             0               
+   115 E_8          B              0             0               
+   116 E_9          B              0             0               
+   117 E_11         B              0             0               
+   118 E_12         B              0             0               
+   119 E_5          NL             0             0                       < eps
+   120 E_6          NL             0             0                       < eps
+
+Karush-Kuhn-Tucker optimality conditions:
+
+KKT.PE: max.abs.err = 0.00e+00 on row 0
+        max.rel.err = 0.00e+00 on row 0
+        High quality
+
+KKT.PB: max.abs.err = 0.00e+00 on row 0
+        max.rel.err = 0.00e+00 on row 0
+        High quality
+
+KKT.DE: max.abs.err = 2.27e-13 on column 12
+        max.rel.err = 2.13e-16 on column 63
+        High quality
+
+KKT.DB: max.abs.err = 2.27e-13 on column 42
+        max.rel.err = 2.27e-13 on column 42
+        High quality
+
+End of output
