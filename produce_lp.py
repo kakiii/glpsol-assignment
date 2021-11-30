@@ -3,6 +3,7 @@ import re
 from copy import deepcopy
 import time
 
+
 def run_glpsol():
     os.system("glpsol --lp 1.lp -o output_1.txt")
     with open("output_1.txt", "r") as outputfile:
@@ -67,12 +68,12 @@ indices = {
 
 items = ["G", "D", "J"]
 
-LIMIT = 165
+FLOW_CONSTRAINT = 165
 MAX_ENERGY = 850
 NODE_NUM = 12
 
 
-def produce_problem():
+def write_problem():
     with open("1.lp", "w") as f:
         f.write("Maximize\n")
         # for every market
@@ -97,7 +98,7 @@ def produce_problem():
                     f.write(f"+ {item}_{neighbor}_{node} ")
                     if node in graph_copy[neighbor]:
                         graph_copy[neighbor].remove(node)
-                f.write(f"<={LIMIT}\n")
+                f.write(f"<={FLOW_CONSTRAINT}\n")
         f.write("\n")
 
         # factory and quarry efficiency constraints
@@ -242,7 +243,7 @@ def produce_problem():
 
 if __name__ == "__main__":
     start_time = time.time()
-    produce_problem()
+    write_problem()
     # print(graph)
     print(run_glpsol())
     print(f"--- {round(time.time() - start_time,2)} seconds ---")
