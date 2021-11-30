@@ -1,5 +1,6 @@
 import os
 import re
+from copy import deepcopy
 
 
 def run_glpsol():
@@ -73,32 +74,75 @@ MAX_ENERGY = 850
 def produce_problem():
     with open("1.lp", "w") as f:
         f.write("Maximize\n")
+        # for every market
         for index in indices['M']:
+            # every neighbor to the market
             for neighbor in graph[index]:
+                # if the neighbor is a factory
                 if neighbor in indices['F']:
+                    # then for every product produced by the factory
+                    # actually, there is only one product produced by the factory(jewelry)
                     for prod in properties['F']['product']:
+                        # write the total price of the product
                         f.write(
                             f"+ {properties['M']['prices'][prod]} {prod}_{neighbor}_{index}")
+                    # besides, the factory can output raw materials directly
                     for prod in properties['F']['demand']:
                         f.write(
                             f"+ {properties['M']['prices'][prod]} {prod}_{neighbor}_{index}")
+                # if the neighbor is a quarry
                 elif neighbor in indices['Q']:
+                    # then for every product produced by the quarry
+                    # it can be sold to the market directly
                     for prod in properties['Q']['product']:
                         f.write(
                             f"+ {properties['M']['prices'][prod]} {prod}_{neighbor}_{index}")
         f.write(f"\nSubject To\n")
         # flow constraints
-
-        for node, neighbors in graph.items():
+        graph_copy = deepcopy(graph)
+        for node, neighbors in graph_copy.items():
             for neighbor in neighbors:
                 for item in items:
                     f.write(f"+ {item}_{node}_{neighbor} ")
                     f.write(f"+ {item}_{neighbor}_{node} ")
+                    if node in graph_copy[neighbor]:
+                        graph_copy[neighbor].remove(node)
                 f.write(f"<={LIMIT}\n")
-
-        # energy constraints
-        for node, neighbors in graph.items():
+        # factory and quarry efficiency constraints
+        for prod,prod_value in properties['F']['product'].items():
+            for index in indices['F']:
+                for neighbor in graph[index]:
+                    f.write(f"+ {prod}_{index}_{neighbor} ")
+                f.write(f"<= {prod_value}\n")
+        for prod,prod_value in properties['Q']['product'].items():
+            for index in indices['Q']:
+                for neighbor in graph[index]:
+                    f.write(f"+ {prod}_{index}_{neighbor} ")
+                f.write(f"<= {prod_value}\n")
+        # for factory: jewelry:gold:diamond=60:70:20
+        for item,item_value in properties['F']['demand'].items():
+            for prod, prod_value in properties['F']['product'].items():
+                for index in indices['F']:
+                    for neighbor in graph[index]:
+                        f.write(f"+ {item_value} {prod}_{index}_{neighbor} ")
+                        f.write(f"+ {prod_value} {item}_{index}_{neighbor} ")
+                        f.write(f"- {prod_value} {item}_{neighbor}_{index} ")
+                    f.write("=0\n")
+        # for quarry: gold:diamond=200:75
+        q_products = [[key,val] for key,val in properties['Q']['product'].items()]
+        print(q_products)
+        for prod in q_products:
+            for prod_next in q_products[1:]:
+                for index in indices['Q']:
+                    for neighbor in graph[index]:
+                        f.write(f"+ {prod[1]} {prod[0]}_{index}_{neighbor} ")
+                        f.write(f"+ {prod_next[1]} {prod_next[0]}_{index}_{neighbor} ")
+                        f.write(f"- {prod[1]} {prod_next[0]}_{neighbor}_{index} ")
+                    f.write("=0\n")
+        # energy constraints, total energy <= MAX_ENERGY
+            
 
 
 if __name__ == "__main__":
     produce_problem()
+    #print(graph)

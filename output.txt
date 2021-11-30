@@ -1,0 +1,89 @@
+Problem:    
+Rows:       21
+Columns:    36
+Non-zeros:  112
+Status:     OPTIMAL
+Objective:  obj = 131750 (MAXimum)
+
+   No.   Row name   St   Activity     Lower bound   Upper bound    Marginal
+------ ------------ -- ------------- ------------- ------------- -------------
+     1 r.5          B             75                          75 
+     2 r.6          NU           200                         200         18.75 
+     3 r.7          B             75                          75 
+     4 r.8          NU           200                         200         18.75 
+     5 r.9          NU            60                          60       833.333 
+     6 r.11         NS             0             0             =         < eps
+     7 r.12         NS             0             0             =      0.833333 
+     8 r.14         B             85                         165 
+     9 r.15         B            110                         165 
+    10 r.16         B             25                         165 
+    11 r.17         NU           165                         165           150 
+    12 r.18         NU           165                         165           150 
+    13 r.19         NU           165                         165           150 
+    14 r.21         B             75             0               
+    15 r.22         NS             0             0             =          6.25 
+    16 r.23         B            200             0               
+    17 r.25         NS             0             0             =           850 
+    18 r.26         NS             0             0             =          6.25 
+    19 r.27         B             75             0               
+    20 r.28         B            175             0               
+    21 r.29         NS             0             0             =           850 
+
+   No. Column name  St   Activity     Lower bound   Upper bound    Marginal
+------ ------------ -- ------------- ------------- ------------- -------------
+     1 g14          B            110             0               
+     2 g34          B            105             0               
+     3 g24          B             90             0               
+     4 d14          B             55             0               
+     5 d34          NL             0             0                       < eps
+     6 d24          B             75             0               
+     7 j14          B              0             0               
+     8 j24          B              0             0               
+     9 j34          B             60             0               
+    10 d12          NL             0             0                         -50 
+    11 d13          B             20             0               
+    12 g12          B             25             0               
+    13 g13          B             65             0               
+    14 d21          NL             0             0                         -50 
+    15 d23          NL             0             0                       < eps
+    16 g21          NL             0             0                       < eps
+    17 g23          B            110             0               
+    18 j31          NL             0             0                       < eps
+    19 j32          NL             0             0                       < eps
+    20 g43          NL             0             0                        -150 
+    21 g31          NL             0             0                       < eps
+    22 g32          NL             0             0                       < eps
+    23 d43          NL             0             0                        -100 
+    24 d31          NL             0             0                         -50 
+    25 d32          NL             0             0                         -50 
+    26 j13          NL             0             0                        -850 
+    27 j23          NL             0             0                        -850 
+    28 j12          NL             0             0                       < eps
+    29 j21          NL             0             0                       < eps
+    30 d41          NL             0             0                        -150 
+    31 g41          NL             0             0                        -150 
+    32 d42          NL             0             0                        -150 
+    33 g42          NL             0             0                        -150 
+    34 j41          NL             0             0                       < eps
+    35 j42          NL             0             0                       < eps
+    36 j43          NL             0             0                       < eps
+
+Karush-Kuhn-Tucker optimality conditions:
+
+KKT.PE: max.abs.err = 1.82e-12 on row 6
+        max.rel.err = 4.29e-16 on row 12
+        High quality
+
+KKT.PB: max.abs.err = 4.26e-14 on row 3
+        max.rel.err = 5.61e-16 on row 3
+        High quality
+
+KKT.DE: max.abs.err = 2.56e-13 on column 4
+        max.rel.err = 6.27e-15 on column 17
+        High quality
+
+KKT.DB: max.abs.err = 6.47e-13 on column 15
+        max.rel.err = 6.47e-13 on column 15
+        High quality
+
+End of output
