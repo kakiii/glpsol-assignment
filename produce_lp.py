@@ -97,8 +97,10 @@ def produce_problem():
                     for prod in properties['Q']['product']:
                         f.write(
                             f"+ {properties['M']['prices'][prod]} {prod}_{neighbor}_{index}")
-        f.write(f"\nSubject To\n")
+        f.write(f"\nSubject To\n\n")
+
         # flow constraints
+        f.write("\\flow constraints\n")
         graph_copy = deepcopy(graph)
         for node, neighbors in graph_copy.items():
             for neighbor in neighbors:
@@ -108,7 +110,10 @@ def produce_problem():
                     if node in graph_copy[neighbor]:
                         graph_copy[neighbor].remove(node)
                 f.write(f"<={LIMIT}\n")
+        f.write("\n")
+
         # factory and quarry efficiency constraints
+        f.write("\\factories and quarries efficiency constraints\n")
         for prod,prod_value in properties['F']['product'].items():
             for index in indices['F']:
                 for neighbor in graph[index]:
@@ -119,7 +124,10 @@ def produce_problem():
                 for neighbor in graph[index]:
                     f.write(f"+ {prod}_{index}_{neighbor} ")
                 f.write(f"<= {prod_value}\n")
+        f.write("\n")
+
         # for factory: jewelry:gold:diamond=60:70:20
+        f.write("\\for factory: jewelry:gold:diamond=60:70:20\n")
         for item,item_value in properties['F']['demand'].items():
             for prod, prod_value in properties['F']['product'].items():
                 for index in indices['F']:
@@ -128,7 +136,10 @@ def produce_problem():
                         f.write(f"+ {prod_value} {item}_{index}_{neighbor} ")
                         f.write(f"- {prod_value} {item}_{neighbor}_{index} ")
                     f.write("=0\n")
+        f.write("\n")
+
         # for quarry: gold:diamond=200:75
+        f.write("\\for quarry: gold:diamond=200:75\n")
         q_products = [[key,val] for key,val in properties['Q']['product'].items()]
         print(q_products)
         for prod in q_products:
@@ -140,7 +151,31 @@ def produce_problem():
                             # f.write(f"+ {prod_next[1]} {prod[0]}_{index}_{neighbor} ")
                             f.write(f"- {prod_next[1]} {prod[0]}_{neighbor}_{index} ")
                         f.write("=0\n")
+        f.write("\n")
+
+        # factory consumes gold and diamond
+        f.write("\\factory consumes gold and diamond\n")
+        for demand, demand_value in properties['F']['demand'].items():
+            for index in indices['F']:
+                for neighbor in graph[index]:
+                    f.write(f"- {demand}_{index}_{neighbor} ")
+                    f.write(f"+ {demand}_{neighbor}_{index} ")
+                f.write(">=0\n")
+        f.write("\n")
+
+        # quarry produces gold and diamond
+        f.write("\\quarry produces gold and diamond\n")
+        for prod,prod_value in properties['Q']['product'].items():
+            for index in indices['Q']:
+                for neighbor in graph[index]:
+                    f.write(f"+ {prod}_{index}_{neighbor} ")
+                    f.write(f"- {prod}_{neighbor}_{index} ")
+                f.write(">=0\n")
+        f.write("\n")
+
         # energy constraints, total energy <= MAX_ENERGY
+        f.write("\\energy constraints, total energy <= MAX_ENERGY\n")
+        
         
 
 
