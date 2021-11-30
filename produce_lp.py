@@ -133,14 +133,15 @@ def produce_problem():
         print(q_products)
         for prod in q_products:
             for prod_next in q_products[1:]:
-                for index in indices['Q']:
-                    for neighbor in graph[index]:
-                        f.write(f"+ {prod[1]} {prod[0]}_{index}_{neighbor} ")
-                        f.write(f"+ {prod_next[1]} {prod_next[0]}_{index}_{neighbor} ")
-                        f.write(f"- {prod[1]} {prod_next[0]}_{neighbor}_{index} ")
-                    f.write("=0\n")
+                if prod != prod_next:
+                    for index in indices['Q']:
+                        for neighbor in graph[index]:
+                            f.write(f"+ {prod[1]} {prod_next[0]}_{index}_{neighbor} ")
+                            # f.write(f"+ {prod_next[1]} {prod[0]}_{index}_{neighbor} ")
+                            f.write(f"- {prod_next[1]} {prod[0]}_{neighbor}_{index} ")
+                        f.write("=0\n")
         # energy constraints, total energy <= MAX_ENERGY
-            
+        
 
 
 if __name__ == "__main__":
