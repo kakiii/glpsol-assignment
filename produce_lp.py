@@ -2,10 +2,11 @@ import os
 import re
 from copy import deepcopy
 import time
-
+import ast
 
 def run_glpsol():
-    os.system("glpsol --lp 1.lp -o output_1.txt")
+    # for step 1 use a.lp
+    os.system("glpsol --lp template.lp -o output_1.txt")
     with open("output_1.txt", "r") as outputfile:
         opt_value = None
         for line in outputfile.readlines():
@@ -71,23 +72,30 @@ items = ["G", "D", "J"]
 FLOW_CONSTRAINT = 165
 MAX_ENERGY = 850
 NODE_NUM = 12
+BUILDING_TYPES = list(indices.keys())
 
 
-def write_problem():
-    with open("1.lp", "w") as f:
+def write_problem(indices=indices):
+    MARKET_FLAG = False
+    with open("template.lp", "w") as f:
         f.write("Maximize\n")
         # for every market
-        for index in indices['M']:
-            # every neighbor to the market
-            for neighbor in graph[index]:
-                for item in items:
-                    if neighbor not in indices['M']:
-                        f.write(
-                            f"- {properties['M']['prices'][item]} {item}_{index}_{neighbor}")
-                        f.write(
-                            f"+ {properties['M']['prices'][item]} {item}_{neighbor}_{index}")
+        if indices['M'] and len(indices['M'])!=NODE_NUM:
+            for index in indices['M']:
+                # every neighbor to the market
+                for neighbor in graph[index]:
+                    for item in items:
+                        if neighbor not in indices['M']:
+                            f.write(
+                                f"- {properties['M']['prices'][item]} {item}_{index}_{neighbor}")
+                            f.write(
+                                f"+ {properties['M']['prices'][item]} {item}_{neighbor}_{index}")
+        else:
+            MARKET_FLAG = True
+            f.write("a_0\n")
         f.write(f"\nSubject To\n\n")
-
+        if MARKET_FLAG:
+            f.write("a_0=0\n")
         # flow constraints
         f.write("\\flow constraints\n")
         graph_copy = deepcopy(graph)
@@ -134,7 +142,7 @@ def write_problem():
         f.write("\\for quarry: gold:diamond=200:75\n")
         q_products = [[key, val]
                       for key, val in properties['Q']['product'].items()]
-        print(q_products)
+        #print(q_products)
         for prod in q_products:
             for prod_next in q_products[1:]:
                 if prod != prod_next:
@@ -241,9 +249,64 @@ def write_problem():
         f.write("END\n")
 
 
+def permute_placements():
+    # with open("placements.txt", "w") as f:
+    #     for permutation in mapdistr(NODE_NUM, 3):
+    #         f.write(f"{permutation}\n")
+    # flag = True
+    all_values = []
+    indices = {key: [] for key in properties.keys()}
+    count = 0
+    for permutation in mapdistr(NODE_NUM, 3):
+        for index,building in enumerate(indices.keys()):
+            indices[building]=permutation[index]
+        # print(indices)
+        # if count <= 5:
+        write_problem(indices)
+        with open("results.txt", "a") as f:
+            val = run_glpsol()
+            all_values.append(val)
+            f.write(f"{count}: {val} {indices}\n")
+            count+=1
+    
+def mapdistr(K, N):
+    for x in range(N**K):
+        t = x
+        l = [[] for _ in range(N)]
+        for i in range(K):
+            id = t % N
+            t = t // N   #integer division
+            l[id].append(i+1)
+        yield l
+
+def find_max_value():
+    all_values = []
+    all_placements = []
+    with open('results.txt',"r") as f:
+        for line in f.readlines():
+            line = line.strip()
+            val  = re.search(r'(\d): (\d+\.\d+) (.+)',line).group(1,2,3)
+            all_values.append(float(val[1]))
+            # print(val[2])
+            all_placements.append(ast.literal_eval(val[2]))
+        # print(val)
+    # print(all_placements)
+    # print(all_values.index(max(all_values)),max(all_values))
+    max_value, max_value_index = max(all_values), all_values.index(max(all_values))
+    max_placement = all_placements[max_value_index]
+    print(max_value,max_value_index, max_placement)
+    write_problem(max_placement)
+    run_glpsol()
+
+    
+
+    
+
 if __name__ == "__main__":
     start_time = time.time()
-    write_problem()
-    # print(graph)
-    print(run_glpsol())
+    # write_problem()
+    # print(run_glpsol())
+    # permute_placements()
+    find_max_value()
     print(f"--- {round(time.time() - start_time,2)} seconds ---")
+    
