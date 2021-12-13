@@ -257,17 +257,23 @@ def permute_placements():
     all_values = []
     indices = {key: [] for key in properties.keys()}
     count = 0
-    for permutation in mapdistr(NODE_NUM, 3):
-        for index,building in enumerate(indices.keys()):
-            indices[building]=permutation[index]
+    os.remove("results.txt")
+    # for permutation in mapdistr(NODE_NUM, 3):
+    #     for index,building in enumerate(indices.keys()):
+    #         indices[building]=permutation[index]
         # print(indices)
         # if count <= 5:
-        write_problem(indices)
-        with open("results.txt", "a") as f:
-            val = run_glpsol()
-            all_values.append(val)
-            f.write(f"{count}: {val} {indices}\n")
-            count+=1
+    with open("placements.txt", "r") as f:
+        for line in f.readlines():
+            permutation = ast.literal_eval(line)
+            for index, building in enumerate(indices.keys()):
+                indices[building] = permutation[index]
+            write_problem(indices)
+            with open("results.txt", "a") as f:
+                val = run_glpsol()
+                all_values.append(val)
+                f.write(f"{count}: {val} {indices}\n")
+                count+=1
     
 def mapdistr(K, N):
     for x in range(N**K):
@@ -278,6 +284,11 @@ def mapdistr(K, N):
             t = t // N   #integer division
             l[id].append(i+1)
         yield l
+
+def write_permutations():
+    with open("placements.txt", "w") as f:
+        for permutation in mapdistr(NODE_NUM, 3):
+            f.write(f"{permutation}\n")
 
 def find_max_value():
     all_values = []
@@ -297,7 +308,6 @@ def find_max_value():
     print(max_value,max_value_index, max_placement)
     write_problem(max_placement)
     run_glpsol()
-
     
 
     
@@ -306,7 +316,8 @@ if __name__ == "__main__":
     start_time = time.time()
     # write_problem()
     # print(run_glpsol())
-    # permute_placements()
+    write_permutations()
+    permute_placements()
     find_max_value()
-    print(f"--- {round(time.time() - start_time,2)} seconds ---")
+    print(f"--- {round(time.time() - start_time,4)} seconds ---")
     
